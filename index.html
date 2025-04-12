@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kodiak City Police Department</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    
+    html {
+      scroll-behavior: smooth;
+    }
+    
+    body {
+      background-color: #000;
+      color: #f5f5f7;
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+    
+    header {
+      background-color: rgba(0, 0, 0, 0.8);
+      backdrop-filter: saturate(180%) blur(20px);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 999;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    nav {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 0 22px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .logo {
+      color: white;
+      font-size: 21px;
+      font-weight: 500;
+    }
+    
+    .nav-links {
+      display: flex;
+      list-style: none;
+    }
+    
+    .nav-links li {
+      margin: 0 15px;
+    }
+    
+    .nav-links a {
+      color: #f5f5f7;
+      text-decoration: none;
+      font-size: 14px;
+      opacity: 0.8;
+      transition: opacity 0.3s;
+    }
+    
+    .nav-links a:hover {
+      opacity: 1;
+    }
+    
+    .hero {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .hero-background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom, #0071e3, #003b75);
+      z-index: -1;
+    }
+    
+    .parallax-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 120%;
+      background: url('/api/placeholder/1920/1080') center center no-repeat;
+      background-size: cover;
+      opacity: 0.1;
+      z-index: -2;
+      transform: translateZ(-1px) scale(2);
+    }
+    
+    .hero-content {
+      padding: 0 22px;
+      color: white;
+      transform: translateY(0);
+      transition: transform 0.5s ease-out;
+    }
+    
+    .logo-container {
+      margin-bottom: 30px;
+    }
+    
+    .logo-image {
+      width: 150px;
+      height: 150px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+    }
+    
+    .scroll-down {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: white;
+      opacity: 0.8;
+      transition: opacity 0.3s;
+    }
+    
+    .scroll-down:hover {
+      opacity: 1;
+    }
+    
+    .scroll-down span {
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+    
+    .scroll-arrow {
+      width: 20px;
+      height: 20px;
+      border-right: 2px solid white;
+      border-bottom: 2px solid white;
+      transform: rotate(45deg);
+      animation: arrow-bounce 2s infinite;
+    }
+    
+    @keyframes arrow-bounce {
+      0%, 20%, 50%, 80%, 100% {
+        transform: rotate(45deg) translateY(0);
+      }
+      40% {
+        transform: rotate(45deg) translateY(10px);
+      }
+      60% {
+        transform: rotate(45deg) translateY(5px);
+      }
+    }
+    
+    h1 {
+      font-size: 56px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: white;
+    }
+    
+    .hero p {
+      font-size: 27px;
+      font-weight: 400;
+      margin-bottom: 30px;
+      color: rgba(255, 255, 255, 0.9);
+    }
+    
+    .section {
+      position: relative;
+      padding: 120px 22px;
+      min-height: 50vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background-color: #000;
+    }
+    
+    .section:nth-child(odd) {
+      background-color: #0a0a0a;
+    }
+    
+    .section-inner {
+      max-width: 980px;
+      width: 100%;
+      margin: 0 auto;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    
+    .section-inner.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    h2 {
+      font-size: 48px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: white;
+    }
+    
+    h3 {
+      font-size: 28px;
+      font-weight: 600;
+      margin: 20px 0;
+      color: white;
+    }
+    
+    p {
+      font-size: 17px;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 20px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin-top: 60px;
+    }
+    
+    .card {
+      background-color: #1a1a1a;
+      border-radius: 18px;
+      padding: 30px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s, box-shadow 0.3s;
+      opacity: 0;
+      transform: translateY(30px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    .card:hover {
+      transform: scale(1.02) translateY(0);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+      background-color: #222;
+    }
+    
+    .card img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 50%;
+      margin-bottom: 20px;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .button {
+      display: inline-block;
+      background-color: #0071e3;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 980px;
+      text-decoration: none;
+      font-size: 17px;
+      font-weight: 400;
+      margin-top: 20px;
+      transition: background-color 0.3s, transform 0.3s;
+    }
+    
+    .button:hover {
+      background-color: #0077ed;
+      transform: scale(1.05);
+    }
+    
+    .leadership-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 30px;
+      margin-top: 60px;
+    }
+    
+    .leader-card {
+      background-color: #1a1a1a;
+      border-radius: 18px;
+      padding: 30px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .leader-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    .leader-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+      background-color: #222;
+    }
+    
+    .leader-card img {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 50%;
+      margin-bottom: 20px;
+      transition: transform 0.5s;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .leader-card:hover img {
+      transform: scale(1.05);
+    }
+    
+    .medal {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 40px;
+      padding: 30px;
+      background-color: #1a1a1a;
+      border-radius: 18px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      opacity: 0;
+      transform: translateX(-30px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .medal.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    
+    .medal:hover {
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+      background-color: #222;
+    }
+    
+    .medal-img {
+      width: 100px;
+      height: 100px;
+      margin-right: 30px;
+      object-fit: contain;
+      transition: transform 0.5s;
+      filter: brightness(1.2);
+    }
+    
+    .medal:hover .medal-img {
+      transform: rotate(15deg);
+    }
+    
+    .medal-info {
+      text-align: left;
+    }
+    
+    footer {
+      background-color: #0a0a0a;
+      padding: 40px 22px;
+      text-align: center;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.5);
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .blue-section {
+      background-color: #002650;
+      color: white;
+      padding: 120px 22px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .blue-section p {
+      color: rgba(255, 255, 255, 0.7);
+    }
+    
+    .blue-section .section-inner {
+      position: relative;
+      z-index: 2;
+    }
+    
+    .dark-bg-pattern {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: radial-gradient(circle, #0071e3 1px, transparent 1px);
+      background-size: 30px 30px;
+      opacity: 0.05;
+      z-index: 1;
+    }
+    
+    .statistics {
+      display: flex;
+      justify-content: space-around;
+      margin: 60px 0;
+      flex-wrap: wrap;
+    }
+    
+    .stat {
+      margin: 20px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    
+    .stat.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    .stat-number {
+      font-size: 56px;
+      font-weight: 600;
+      color: #0071e3;
+      transition: transform 0.3s;
+    }
+    
+    .stat:hover .stat-number {
+      transform: scale(1.1);
+    }
+    
+    .stat-label {
+      font-size: 17px;
+      color: rgba(255, 255, 255, 0.6);
+    }
+    
+    .parallax-section {
+      position: relative;
+      height: 50vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      perspective: 10px;
+      background-color: #001430;
+    }
+    
+    .parallax-bg-1, .parallax-bg-2 {
+      position: absolute;
+      top: -50%;
+      left: -10%;
+      width: 120%;
+      height: 200%;
+      background: url('/api/placeholder/1920/1080') center center no-repeat;
+      background-size: cover;
+      z-index: -1;
+      opacity: 0.1;
+    }
+    
+    .parallax-content {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      color: white;
+      padding: 0 22px;
+      max-width: 800px;
+    }
+    
+    .parallax-content h2 {
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+    
+    .parallax-content p {
+      color: rgba(255, 255, 255, 0.9);
+      text-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
+    }
+    
+    .scroll-reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    
+    .scroll-reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 42px;
+      }
+      
+      h2 {
+        font-size: 36px;
+      }
+      
+      .hero p {
+        font-size: 22px;
+      }
+      
+      .medal {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .medal-img {
+        margin-right: 0;
+        margin-bottom: 20px;
+      }
+      
+      .medal-info {
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav>
+      <div class="logo">Kodiak City Police Department</div>
+      <ul class="nav-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#units">Units</a></li>
+        <li><a href="#leadership">Leadership</a></li>
+        <li><a href="#medals">Awards</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+  
+  <section class="hero" id="home">
+    <div class="parallax-bg"></div>
+    <div class="hero-background"></div>
+    <div class="hero-content">
+      <div class="logo-container">
+        <img src="https://media.discordapp.net/attachments/1347537919254073367/1348217121464913934/685b39e6-8cd1-4a70-bbca-36bf52ff4e3e_removalai_preview.png?ex=67fb7b8a&is=67fa2a0a&hm=6ddc8eda26b8ba32476e4fb2228b2afdf4baaa249c0a6cab9b630c609e4ef618&=&format=webp&quality=lossless&width=625&height=625" alt="KCPD Logo" class="logo-image">
+      </div>
+      <h1>Kodiak City Police Department</h1>
+      <p>Valor, Honor, Duty</p>
+    </div>
+    <a href="#overview" class="scroll-down">
+      <span>Scroll Down</span>
+      <div class="scroll-arrow"></div>
+    </a>
+  </section>
+  
+  <section class="section" id="overview">
+    <div class="section-inner scroll-reveal">
+      <h2>We Protect Kodiak</h2>
+      <p>Welcome to Kodiak City Police Department! Uphold the law, protect the city, and engage in realistic police roleplay!</p>
+      
+      <div class="statistics">
+        <div class="stat">
+          <div class="stat-number">673</div>
+          <div class="stat-label">Officers</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number">4</div>
+          <div class="stat-label">Units</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number">24/7</div>
+          <div class="stat-label">Protection</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number">97%</div>
+          <div class="stat-label">Satisfaction</div>
+        </div>
+      </div>
+      
+      <a href="#contact" class="button">Contact Us</a>
+    </div>
+  </section>
+  
+  <section class="parallax-section">
+    <div class="parallax-bg-1"></div>
+    <div class="parallax-content">
+      <h2>Professional Service for Our Community</h2>
+      <p>Day after day, we are committed to ensuring the safety of all citizens with dedication and devotion.</p>
+    </div>
+  </section>
+  
+  <section class="blue-section" id="units">
+    <div class="dark-bg-pattern"></div>
+    <div class="section-inner scroll-reveal">
+      <h2>Our Units</h2>
+      <p>Specialized teams for every aspect of public safety.</p>
+      
+      <div class="grid">
+        <div class="card">
+          <img src="https://media.discordapp.net/attachments/1347537919254073367/1349814612643545118/ETU.png?ex=67fb5c91&is=67fa0b11&hm=10ad672c4918ea0d4b949b3a623b65f7fb9059a06ec47567172e37ee93c9495a&=&format=webp&quality=lossless&width=625&height=625" alt="Patrol Service">
+          <h3>Education & Training Unit</h3>
+          <p>The Education & Training Unit is responsible for ensuring that all officers in the department are properly trained in police procedures and roleplay guidelines. They help new recruits become familiar with department policies and ensure experienced officers stay updated on protocols.</p>
+        </div>
+        
+        <div class="card">
+          <img src="https://media.discordapp.net/attachments/1347537919254073367/1349814614011150507/SWAT.png?ex=67fb5c92&is=67fa0b12&hm=eeb82784f71505226bc8563fd289de21e5b99f09a6305cf104097d5e0d18376b&=&format=webp&quality=lossless&width=625&height=625" alt="Investigation Department">
+          <h3>Special Weapons & Tactics</h3>
+          <p>The SWAT is an elite team within the department that handles high-risk operations, such as hostage situations, armed robberies, and barricaded suspects. They are equipped with advanced weaponry and tactical gear. And even fly with helicopters!</p>
+        </div>
+        
+        <div class="card">
+          <img src="https://media.discordapp.net/attachments/1347537919254073367/1349814613742587924/SPU.png?ex=67fb5c92&is=67fa0b12&hm=32eb4eccea3da8561e539a1cb499b0e3afa2169eae5ee05142b1551d7c12819f&=&format=webp&quality=lossless&width=625&height=625" alt="K-9 Unit">
+          <h3>Strategic Protection Unit</h3>
+          <p>The Strategic Protection Unit is responsible for safeguarding high-profile individuals, including the Chief Command and VIPs. The Strategic Protection Unit is the only Unit who is allowed to guard the gate! They also handle security at major events to prevent threats. Overall they are protection the academy.</p>
+        </div>
+        
+        <div class="card">
+          <img src="https://media.discordapp.net/attachments/1347537919254073367/1349814614262546613/TCU.png?ex=67fb5c92&is=67fa0b12&hm=0eefe4ad15cc6cf3ea3754acbd49d16c3d80eee4fc3663cefbef5a8262b13bd6&=&format=webp&quality=lossless&width=625&height=625" alt="SWAT">
+          <h3>Transport Control Unit</h3>
+          <p>The Transport Control Unit is responsible for maintaining order on the roads and waterways, overseeing transport, and ensuring public and official transportation safety. They enforce traffic and maritime laws while also assisting in high-speed pursuits and emergency escorts.</p>
+        </div>
+        
+      </div>
+    </div>
+  </section>
+  
+  <section class="parallax-section">
+    <div class="parallax-bg-2"></div>
+    <div class="parallax-content">
+      <h2>Leadership and Integrity</h2>
+      <p>Our leaders embody the highest standards of police excellence.</p>
+    </div>
+  </section>
+  
+  <section class="section" id="leadership">
+    <div class="section-inner scroll-reveal">
+      <h2>Our Leadership</h2>
+      <p>Learn more about the people who lead the Kodiak City Police Department.</p>
+      
+      <div class="leadership-grid">
+        <div class="leader-card">
+          <img src="https://tr.rbxcdn.com/30DAY-AvatarHeadshot-7F5AC4BF483CC479DFDF0DBF72CBCF24-Png/150/150/AvatarHeadshot/Webp/noFilter" alt="Police Chief">
+          <h3>Rzyxnb</h3>
+          <p>Owner</p>
+          <p>Ownership</p>
+        </div>
+        
+        <div class="leader-card">
+          <img src="https://tr.rbxcdn.com/30DAY-AvatarHeadshot-81220D6B591714841878B157DB4CFC10-Png/150/150/AvatarHeadshot/Webp/noFilter" alt="Deputy Chief">
+          <h3>Trabbelmaker1</h3>
+          <p>Owner</p>
+          <p>Ownership</p>
+        </div>
+
+        <div class="leader-card">
+          <img src="https://tr.rbxcdn.com/30DAY-AvatarHeadshot-0193FC724AE280B38BCCEA2FE9B53A19-Png/150/150/AvatarHeadshot/Webp/noFilter" alt="Lieutenant">
+          <h3>Bob</h3>
+          <p>Manager</p>
+          <p>KCPD's Son</p>
+        </div>
+
+        
+        <div class="leader-card">
+          <img src="https://tr.rbxcdn.com/30DAY-AvatarHeadshot-72190EABDDC589D502E292610F94AD72-Png/150/150/AvatarHeadshot/Webp/noFilter" alt="Captain">
+          <h3>N/A</h3>
+          <p>Chief of Police</p>
+          <p>Chief Command</p>
+        </div>
+        
+        <div class="leader-card">
+          <img src="https://tr.rbxcdn.com/30DAY-AvatarHeadshot-72190EABDDC589D502E292610F94AD72-Png/150/150/AvatarHeadshot/Webp/noFilter" alt="Lieutenant">
+          <h3>N/A</h3>
+          <p>Deputy Chief I</p>
+          <p>Chief Command</p>
+        </div>
+
+        <div class="leader-card">
+          <img src="https://tr.rbxcdn.com/30DAY-AvatarHeadshot-72190EABDDC589D502E292610F94AD72-Png/150/150/AvatarHeadshot/Webp/noFilter" alt="Lieutenant">
+          <h3>N/A</h3>
+          <p>Deputy Chief II</p>
+          <p>Chief Command</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+  
+  <section class="blue-section" id="medals">
+    <div class="dark-bg-pattern"></div>
+    <div class="section-inner scroll-reveal">
+      <h2>Awards</h2>
+      <p>The highest honors bestowed upon our officers for exceptional service.</p>
+      
+      <div class="medal">
+        <img src="https://media.discordapp.net/attachments/1276799408893067330/1360594923446866114/up-arrow_1.png?ex=67fbb044&is=67fa5ec4&hm=1f1da858bfe19e62d11fdcf07efefc5d2be43b22e79273417b0a89ef3d83da79&=&format=webp&quality=lossless&width=640&height=640" alt="Medal of Valor" class="medal-img">
+        <div class="medal-info">
+          <h3>Medal of Valor</h3>
+          <p>Awarded for extraordinary courage in the face of extreme danger.</p>
+          <p>Last recipient: N/A</p>
+        </div>
+      </div>
+      
+      <div class="medal">
+        <img src="https://media.discordapp.net/attachments/1276799408893067330/1360594923446866114/up-arrow_1.png?ex=67fbb044&is=67fa5ec4&hm=1f1da858bfe19e62d11fdcf07efefc5d2be43b22e79273417b0a89ef3d83da79&=&format=webp&quality=lossless&width=640&height=640" alt="Distinguished Service Medal" class="medal-img">
+        <div class="medal-info">
+          <h3>Medal of Leadership</h3>
+          <p>Awarded for exceptional guidance, inspiring others through vision, integrity, and decisive action.</p>
+          <p>Last recipient: N/A</p>
+        </div>
+      </div>
+
+      <div class="medal">
+        <img src="https://media.discordapp.net/attachments/1276799408893067330/1360594923446866114/up-arrow_1.png?ex=67fbb044&is=67fa5ec4&hm=1f1da858bfe19e62d11fdcf07efefc5d2be43b22e79273417b0a89ef3d83da79&=&format=webp&quality=lossless&width=640&height=640" alt="Distinguished Service Medal" class="medal-img">
+        <div class="medal-info">
+          <h3>Medal of Honor</h3>
+          <p>Awarded for acts of utmost bravery and selflessness in defense of duty and principle.</p>
+          <p>Last recipient: N/A</p>
+        </div>
+      </div>
+
+      <div class="medal">
+        <img src="https://media.discordapp.net/attachments/1276799408893067330/1360594923446866114/up-arrow_1.png?ex=67fbb044&is=67fa5ec4&hm=1f1da858bfe19e62d11fdcf07efefc5d2be43b22e79273417b0a89ef3d83da79&=&format=webp&quality=lossless&width=640&height=640" alt="Distinguished Service Medal" class="medal-img">
+        <div class="medal-info">
+          <h3>Medal of Service</h3>
+          <p>Awarded for outstanding dedication and consistent contribution to a greater cause or mission.</p>
+          <p>Last recipient: N/A</p>
+        </div>
+      </div>
+
+      <div class="medal">
+        <img src="https://media.discordapp.net/attachments/1276799408893067330/1360594923446866114/up-arrow_1.png?ex=67fbb044&is=67fa5ec4&hm=1f1da858bfe19e62d11fdcf07efefc5d2be43b22e79273417b0a89ef3d83da79&=&format=webp&quality=lossless&width=640&height=640" alt="Distinguished Service Medal" class="medal-img">
+        <div class="medal-info">
+          <h3>Medal of Justice</h3>
+          <p>Awarded for unwavering commitment to fairness, truth, and the protection of the innocent.</p>
+          <p>Last recipient: N/A</p>
+        </div>
+      </div>
+
+      <div class="medal">
+        <img src="https://media.discordapp.net/attachments/1276799408893067330/1360594923446866114/up-arrow_1.png?ex=67fbb044&is=67fa5ec4&hm=1f1da858bfe19e62d11fdcf07efefc5d2be43b22e79273417b0a89ef3d83da79&=&format=webp&quality=lossless&width=640&height=640" alt="Lifesaving Medal" class="medal-img">
+        <div class="medal-info">
+          <h3>Medal of Loyalty</h3>
+          <p>Awarded for steadfast allegiance and unshakable support through adversity and time.</p>
+          <p>Last recipient: N/A</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <section class="section" id="contact">
+    <div class="section-inner scroll-reveal">
+      <h2>About Us</h2>
+      <p>If you need help or have any questions please open a support ticket in our communication server!</p>
+      
+      <div class="grid">
+        <div class="card">
+          <h3>Discord</h3>
+          <p>https://discord.gg/rxk83AttJr</p>
+        </div>
+
+        <div class="card">
+          <h3>Roblox Group</h3>
+          <p>https://www.roblox.com/communities/16133139/Kodiak-City-Police-Department</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <footer>
+    <p>Copyright © 2025 Kodiak City Police Department. All rights reserved.</p>
+    <p>This website is not the offical website of the real KCPD.</p>
+  </footer>
+
+  <script>
+    // Parallax Effect for Hero Section
+    window.addEventListener('scroll', function() {
+      const scrollPosition = window.scrollY;
+      const parallaxBg = document.querySelector('.parallax-bg');
+      const heroContent = document.querySelector('.hero-content');
+      
+      if (parallaxBg) {
+        parallaxBg.style.transform = `translateY(${scrollPosition * 0.5}px)`;
+      }
+      
+      if (heroContent && scrollPosition < window.innerHeight) {
+        heroContent.style.transform = `translateY(${scrollPosition * 0.3}px)`;
+        heroContent.style.opacity = 1 - (scrollPosition / (window.innerHeight * 0.5));
+      }
+    });
+
+    // Scroll Reveal Animation
+    function revealOnScroll() {
+      const sections = document.querySelectorAll('.scroll-reveal, .section-inner, .card, .medal, .leader-card, .stat');
+      
+      sections.forEach(element => {
+        const elementTop = element.getBoundingClientRect().top;
+        const elementVisible = 150;
+        
+        if (elementTop < window.innerHeight - elementVisible) {
+          element.classList.add('visible');
+          
+          // For cards in a grid, add additional time-delayed animation
+          if (element.classList.contains('section-inner')) {
+            const cards = element.querySelectorAll('.card');
+            cards.forEach((card, index) => {
+              setTimeout(() => {
+                card.classList.add('visible');
+              }, 100 * index);
+            });
+            
+            const leaderCards = element.querySelectorAll('.leader-card');
+            leaderCards.forEach((card, index) => {
+              setTimeout(() => {
+                card.classList.add('visible');
+              }, 100 * index);
+            });
+            
+            const medals = element.querySelectorAll('.medal');
+            medals.forEach((medal, index) => {
+              setTimeout(() => {
+                medal.classList.add('visible');
+              }, 200 * index);
+            });
+            
+            const stats = element.querySelectorAll('.stat');
+            stats.forEach((stat, index) => {
+              setTimeout(() => {
+                stat.classList.add('visible');
+              }, 150 * index);
+            });
+          }
+        }
+      });
+    }
+
+    window.addEventListener('scroll', revealOnScroll);
+    window.addEventListener('load', revealOnScroll);
+    
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        const targetId = this.getAttribute('href');
+        const targetElement = document.querySelector(targetId);
+        
+        if (targetElement) {
+          window.scrollTo({
+            top: targetElement.offsetTop - 44, // Subtract header height
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
